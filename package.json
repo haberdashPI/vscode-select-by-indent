@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:vscode-move-by-indent.select"
+		"onCommand:vscode-move-by-indent.select"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "vscode-move-by-indent.select",
-                "title": "Select by Indentation Level"
+				"title": "Select by Indentation Level"
 			}
 		]
 	},
