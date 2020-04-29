@@ -94,6 +94,21 @@ function expandByIndent(editor: vscode.TextEditor){
         let lines = doc.getText(lineRange(doc,from,to));
         let indents = findIndents(doc,lines);
         let minIndent = indents.reduce(minUndef)
+        if(minIndent === undefined){
+            let [minIndentBefore, atMinBefore] = findNextIndent(doc,from,Number.POSITIVE_INFINITY,-1);
+            let [minIndentAfter, atMinAfter] = findNextIndent(doc,to,Number.POSITIVE_INFINITY,1);
+            if(!Number.isFinite(minIndentBefore) && !Number.isFinite(minIndentAfter)){
+                minIndent = undefined
+            }else if(!Number.isFinite(minIndentBefore)){
+                minIndent = minIndentAfter
+            }else if(!Number.isFinite(minIndentAfter)){
+                minIndent = minIndentBefore
+            }else if(minIndentBefore < minIndentAfter){
+                minIndent = minIndentAfter
+            }else{
+                minIndent = minIndentBefore
+            }
+        }
 
         if(minIndent !== undefined){
             let [before, atBefore] = findNextIndent(doc,from,minIndent,-1)
