@@ -1,7 +1,10 @@
 {
 	"name": "vscode-select-by-indent",
-	"displayName": "vscode-select-by-indent",
-	"description": "Quickly move by and select code according to it's level of indentation",
+	"displayName": "Select by Indent",
+	"license": "MIT",
+	"publisher": "haberdashPI",
+	"repository": "https://github.com/haberdashPI/vscode-select-by-indent",
+	"description": "Quickly select code according to its level of indentation",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.44.0"
