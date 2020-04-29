@@ -116,13 +116,21 @@ function expandByIndent(editor: vscode.TextEditor){
 
             // if we did not expand to any more lines, add the
             // the surround indent lines
-            if(atBefore+1 == from && atAfter-1 == to){
+            if(atBefore+1 === from && atAfter-1 === to){
                 if(before !== after){
                     if(before > after){
                         atAfter--;
                     }else if(after > before){
                         atBefore++;
                     }
+                }
+
+                // only onclude the lower line if it isn't separated by
+                // whitespace
+                let str = doc.getText(lineRange(doc,atAfter-1,atAfter-1))
+                let lastIndent = findIndent(doc,str)
+                if(lastIndent === undefined){
+                    atAfter--;
                 }
             // otherwise, only include lines with the same indent
             // (so shrink before and after back one)
