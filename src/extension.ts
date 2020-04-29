@@ -26,6 +26,7 @@ function lineRange(doc: vscode.TextDocument, from: number,to: number){
 }
 
 function findIndents(doc: vscode.TextDocument, text: string){
+    text = text.replace(/(\r|\r\n|\n)$/,'')
     let lines = text.split(/[\r\n]+/)
 
     let tabSizeSetting = vscode.workspace.getConfiguration('editor',doc).
@@ -65,24 +66,21 @@ function minUndef(x: number | undefined, y: number | undefined){
     else return Math.min(x,y)
 }
 
-function findIndentBefore(doc: vscode.TextDocument,minIndent: number,from: number){
-    let at = from-1;
-    while(at > 0){
-        let indent = findIndent(doc,doc.getText(lineRange(doc,at,at)))
-        if(indent !== undefined && indent < minIndent) return at+1
-        at--;
-    }
-    return 0;
-}
+function findNextIndent(doc: vscode.TextDocument, line: number, indent: number,
+    advance: number): [number, number]{
 
-function findIndentAfter(doc: vscode.TextDocument,minIndent: number,to: number){
-    let at = to+1;
-    while(at <= doc.lineCount){
-        let indent = findIndent(doc,doc.getText(lineRange(doc,at,at)))
-        if(indent !== undefined && indent < minIndent) return at-1
-        at++;
+    let at = line+advance
+    let nextIndent = findIndent(doc,doc.getText(lineRange(doc, at, at)))
+    while(at > 0 && at < doc.lineCount &&
+          (nextIndent === undefined || nextIndent >= indent)){
+        at = at + advance
+        nextIndent = findIndent(doc,doc.getText(lineRange(doc, at, at)))
     }
-    return doc.lineCount;
+    if(nextIndent === undefined){
+        return [indent, at]
+    }else{
+        return [nextIndent, at]
+    }
 }
 
 function expandByIndent(editor: vscode.TextEditor){
@@ -91,25 +89,35 @@ function expandByIndent(editor: vscode.TextEditor){
 
         let from = sel.start.line
         let to = sel.end.line
+        if(sel.end.character === 0 && sel.end.line > sel.start.line) to--
+
         let lines = doc.getText(lineRange(doc,from,to));
         let indents = findIndents(doc,lines);
         let minIndent = indents.reduce(minUndef)
-        if(minIndent){
-            let before = findIndent(doc,doc.getText(lineRange(doc,from-1,from-1)))
-            let after = findIndent(doc,doc.getText(lineRange(doc,to+1,to+1)))
 
-            let unselectedOuter = (after ? after < minIndent : true) &&
-                (before ? before < minIndent && before === after : false)
+        if(minIndent !== undefined){
+            let [before, atBefore] = findNextIndent(doc,from,minIndent,-1)
+            let [after, atAfter] = findNextIndent(doc,to,minIndent,1)
 
-            if(unselectedOuter){
-                let range = lineRange(doc,from-1,to+1)
-                return new vscode.Selection(range.start,range.end)
+            // if we did not expand to any more lines, add the
+            // the surround indent lines
+            if(atBefore+1 == from && atAfter-1 == to){
+                if(before !== after){
+                    if(before > after){
+                        atAfter--;
+                    }else if(after > before){
+                        atBefore++;
+                    }
+                }
+            // otherwise, only include lines with the same indent
+            // (so shrink before and after back one)
             }else{
-                let start = findIndentBefore(doc,minIndent,from)
-                let end = findIndentAfter(doc,minIndent,to)
-                let range = lineRange(doc,start,end)
-                return new vscode.Selection(range.start,range.end)
+                atBefore++;
+                atAfter--;
             }
+
+            let range = lineRange(doc,atBefore,atAfter)
+            return new vscode.Selection(range.start,range.end)
         }
         return sel
     }

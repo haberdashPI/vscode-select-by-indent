@@ -17,7 +17,7 @@
 		"commands": [
 			{
 				"command": "vscode-move-by-indent.select",
-				"title": "Select by Indentation Level"
+				"title": "Expand Selection by Indentation Level"
 			}
 		]
 	},
