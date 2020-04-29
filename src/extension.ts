@@ -20,9 +20,9 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function lineRange(doc: vscode.TextDocument, from: number,to: number){
-    return doc.lineCount > to ?
-        new Range(new Position(from,0), new Position(to+1,0)) :
-        new Range(new Position(from,0), doc.lineAt(to).range.end)
+    return to === doc.lineCount-1 ?
+        new Range(new Position(from,0), doc.lineAt(to).range.end) :
+        new Range(new Position(from,0), new Position(to+1,0))
 }
 
 function findIndents(doc: vscode.TextDocument, text: string){
@@ -71,7 +71,7 @@ function findNextIndent(doc: vscode.TextDocument, line: number, indent: number,
 
     let at = line+advance
     let nextIndent = findIndent(doc,doc.getText(lineRange(doc, at, at)))
-    while(at > 0 && at < doc.lineCount &&
+    while(at > 0 && at < doc.lineCount-1 &&
           (nextIndent === undefined || nextIndent >= indent)){
         at = at + advance
         nextIndent = findIndent(doc,doc.getText(lineRange(doc, at, at)))
@@ -112,8 +112,8 @@ function expandByIndent(editor: vscode.TextEditor){
             // otherwise, only include lines with the same indent
             // (so shrink before and after back one)
             }else{
-                atBefore++;
-                atAfter--;
+                if(before < minIndent) atBefore++;
+                if(after < minIndent) atAfter--;
             }
 
             let range = lineRange(doc,atBefore,atAfter)
