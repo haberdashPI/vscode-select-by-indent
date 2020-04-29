@@ -9,7 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('vscode-move-by-indent.select', () => {
+    let disposable = vscode.commands.registerCommand('vscode-select-by-indent.select', () => {
         let editor = vscode.window.activeTextEditor;
         if(editor){
             editor.selections = editor.selections.map(expandByIndent(editor));

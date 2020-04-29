@@ -1,6 +1,6 @@
 {
-	"name": "vscode-move-by-indent",
-	"displayName": "vscode-move-by-indent",
+	"name": "vscode-select-by-indent",
+	"displayName": "vscode-select-by-indent",
 	"description": "Quickly move by and select code according to it's level of indentation",
 	"version": "0.0.1",
 	"engines": {
@@ -10,13 +10,13 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:vscode-move-by-indent.select"
+		"onCommand:vscode-select-by-indent.select"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "vscode-move-by-indent.select",
+				"command": "vscode-select-by-indent.select",
 				"title": "Expand Selection by Indentation Level"
 			}
 		]
