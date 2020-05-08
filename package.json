@@ -13,7 +13,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:vscode-select-by-indent.select"
+		"onCommand:vscode-select-by-indent.select",
+		"onCommand:vscode-select-by-indent.select-top-only"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -21,6 +22,10 @@
 			{
 				"command": "vscode-select-by-indent.select",
 				"title": "Expand Selection by Indentation Level"
+			},
+			{
+				"command": "vscode-select-by-indent.select-top-only",
+				"title": "Expand Selection by Indentation Level (top only)"
 			}
 		]
 	},

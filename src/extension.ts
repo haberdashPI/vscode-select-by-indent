@@ -15,6 +15,14 @@ export function activate(context: vscode.ExtensionContext) {
             editor.selections = editor.selections.map(expandByIndent(editor));
         }
     });
+    context.subscriptions.push(disposable);
+
+    disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-top-only', () => {
+        let editor = vscode.window.activeTextEditor;
+        if(editor){
+            editor.selections = editor.selections.map(expandByIndent(editor,true));
+        }
+    });
 
     context.subscriptions.push(disposable);
 }
@@ -83,7 +91,7 @@ function findNextIndent(doc: vscode.TextDocument, line: number, indent: number,
     }
 }
 
-function expandByIndent(editor: vscode.TextEditor){
+function expandByIndent(editor: vscode.TextEditor, toponly: boolean = false){
     return function(sel: vscode.Selection){
         let doc = editor.document;
 
@@ -120,20 +128,23 @@ function expandByIndent(editor: vscode.TextEditor){
                 if(before !== after){
                     if(before > after){
                         atAfter--;
-                    }else if(after > before){
+                    }else if(after > before && !toponly){
                         atBefore++;
                     }
                 }
 
-                // only onclude the lower line if it isn't separated by
-                // whitespace
-                let str = doc.getText(lineRange(doc,atAfter-1,atAfter-1))
-                let lastIndent = findIndent(doc,str)
-                if(lastIndent === undefined){
-                    atAfter--;
+                if(toponly){ atAfter--; }
+                else{
+                    // only include the lower line if it isn't separated by
+                    // whitespace
+                    let str = doc.getText(lineRange(doc,atAfter-1,atAfter-1))
+                    let lastIndent = findIndent(doc,str)
+                    if(lastIndent === undefined){
+                        atAfter--;
+                    }
                 }
             // otherwise, only include lines with the same indent
-            // (so shrink before and after back one)
+            // (so shrink both before and after back one)
             }else{
                 if(before < minIndent) atBefore++;
                 if(after < minIndent) atAfter--;
@@ -142,7 +153,7 @@ function expandByIndent(editor: vscode.TextEditor){
             let range = lineRange(doc,atBefore,atAfter)
             return new vscode.Selection(range.start,range.end)
         }
-        return sel
+        return sel;
     }
 }
 // this method is called when your extension is deactivated
