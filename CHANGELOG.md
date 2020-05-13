@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.1.1
+
+- small revisions to README.
+
 ## 0.1.0
 
 - fixed bug when selecting single-line indent region

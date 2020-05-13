@@ -10,20 +10,20 @@ selection expands.
 Each version of the command differs in how the selection expands in reference to
 indentation level. The commands are:
 
-- `Expand Selection by Indentation Level (inner only)` -- Expand the selection so
-  that all lines with the same or greater amount of indentation than the
-  currently selected lines.
-- `Expand Selection by Indentation level (outer only)` -- Expand the selection so
-  that all lines at the same or greater amount of indentation than the currently
-  selected lines; then include the lines just above and below this
-  (the outer lines).
-- `Expand Selection by Indentation level (outer top only)` -- Expand the selection
-  so that all lines at the same or greater amount of indentation than the
-  currently selected lines are selected; then include the line just above this
+- `Expand Selection by Indentation Level (inner only)` - Expand the selection
+  to all lines with the equal or greater indentation than the currently
+  selected lines.
+- `Expand Selection by Indentation level (outer only)` - Expand the selection
+  to all lines at the equal or greater indentation than the currently
+  selected lines; then include the lines just above and below this (the outer
+  lines).
+- `Expand Selection by Indentation level (outer top only)` - Expand the
+  selection to all lines with the same or greater indentation than the
+  currently selected lines; then include the line just above this
   (the top outer line).
-- `Expand Selection by Indentation level` -- Alternate expanding by
+- `Expand Selection by Indentation level` - Alternate expanding by
    the inner-only and the outer-only rules, described above.
-- `Expand Selection by Indentation level (top only)` -- Alternate expanding by
+- `Expand Selection by Indentation level (top only)` - Alternate expanding by
   the inner-only and the outer-top-only rules, described above.
 
 There are currently no default keybindings. You can add new keybindings by
