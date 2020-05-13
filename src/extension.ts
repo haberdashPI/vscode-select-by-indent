@@ -20,7 +20,34 @@ export function activate(context: vscode.ExtensionContext) {
     disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-top-only', () => {
         let editor = vscode.window.activeTextEditor;
         if(editor){
-            editor.selections = editor.selections.map(expandByIndent(editor,true));
+            editor.selections = editor.selections.map(expandByIndent(editor,{toponly: true}));
+        }
+    });
+
+    context.subscriptions.push(disposable);
+
+    disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-inner', () => {
+        let editor = vscode.window.activeTextEditor;
+        if(editor){
+            editor.selections = editor.selections.map(expandByIndent(editor,{inner: true}));
+        }
+    });
+
+    context.subscriptions.push(disposable);
+
+    disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer', () => {
+        let editor = vscode.window.activeTextEditor;
+        if(editor){
+            editor.selections = editor.selections.map(expandByIndent(editor,{outer: true}));
+        }
+    });
+
+    context.subscriptions.push(disposable);
+
+    disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer-top-only', () => {
+        let editor = vscode.window.activeTextEditor;
+        if(editor){
+            editor.selections = editor.selections.map(expandByIndent(editor,{outer: true, toponly: true}));
         }
     });
 
@@ -91,7 +118,40 @@ function findNextIndent(doc: vscode.TextDocument, line: number, indent: number,
     }
 }
 
-function expandByIndent(editor: vscode.TextEditor, toponly: boolean = false){
+interface IOptions {
+    toponly?: boolean,
+    inner?: boolean,
+    outer?: boolean
+}
+
+function includeOuter(doc: vscode.TextDocument,
+    before: number, atBefore: number,
+    after: number, atAfter: number, options: IOptions){
+
+    // add the outer surrounding indents
+    if(before !== after){
+        if(before > after){
+            atAfter--;
+        }else if(after > before && !options?.toponly){
+            atBefore++;
+        }
+    }
+
+    if(options?.toponly){ atAfter--; }
+    else{
+        // only include the lower line if it isn't separated by
+        // whitespace
+        let str = doc.getText(lineRange(doc,atAfter-1,atAfter-1))
+        let lastIndent = findIndent(doc,str)
+        if(lastIndent === undefined){
+            atAfter--;
+        }
+    }
+
+    return [before, atBefore, after, atAfter]
+}
+
+function expandByIndent(editor: vscode.TextEditor, options: IOptions | undefined = {}){
     return function(sel: vscode.Selection){
         let doc = editor.document;
 
@@ -119,39 +179,60 @@ function expandByIndent(editor: vscode.TextEditor, toponly: boolean = false){
         }
 
         if(minIndent !== undefined){
-            let [before, atBefore] = findNextIndent(doc,from,minIndent,-1)
-            let [after, atAfter] = findNextIndent(doc,to,minIndent,1)
+            let [before, atBefore] = findNextIndent(doc,from,minIndent,-1);
+            let [after, atAfter] = findNextIndent(doc,to,minIndent,1);
 
-            // if we did not expand to any more lines, add the
-            // the surround indent lines
-            if(atBefore+1 === from && atAfter-1 === to){
+            let range = lineRange(doc,
+                before < minIndent ? atBefore+1 : atBefore,
+                after < minIndent ? atAfter-1 : atAfter
+            );
+
+            let proposed = new vscode.Selection(range.start, range.end);
+
+            // expand to outer lines, if the selection is unchanged or
+            // if the outer lines should always be included
+            if(options?.outer || (proposed.isEqual(sel) && !options?.inner)){
+                // add the outer surrounding indents
                 if(before !== after){
                     if(before > after){
                         atAfter--;
-                    }else if(after > before && !toponly){
+                    }else if(after > before && !options?.toponly){
                         atBefore++;
                     }
                 }
 
-                if(toponly){ atAfter--; }
+                if(options?.toponly){ atAfter--; }
                 else{
                     // only include the lower line if it isn't separated by
                     // whitespace
-                    let str = doc.getText(lineRange(doc,atAfter-1,atAfter-1))
-                    let lastIndent = findIndent(doc,str)
+                    let str = doc.getText(lineRange(doc,atAfter-1,atAfter-1));
+                    let lastIndent = findIndent(doc,str);
                     if(lastIndent === undefined){
                         atAfter--;
                     }
                 }
-            // otherwise, only include lines with the same indent
-            // (so shrink both before and after back one)
-            }else{
-                if(before < minIndent) atBefore++;
-                if(after < minIndent) atAfter--;
+
+
+                let range = lineRange(doc,atBefore,atAfter);
+                return new vscode.Selection(range.start, range.end);
             }
 
-            let range = lineRange(doc,atBefore,atAfter)
-            return new vscode.Selection(range.start,range.end)
+            if(proposed.isEqual(sel)){
+                // repeaat the search outwards, to another indentation level
+                minIndent = Math.max(before,after);
+                [before, atBefore] = findNextIndent(doc,atBefore+1,minIndent,-1);
+                [after, atAfter] = findNextIndent(doc,atAfter-1,minIndent,1);
+
+                let range = lineRange(doc,
+                    before < minIndent ? atBefore+1 : atBefore,
+                    after < minIndent ? atAfter-1 : atAfter
+                );
+                return new vscode.Selection(range.start, range.end);
+            }else{
+                return proposed;
+            }
+
+            return proposed;
         }
         return sel;
     }

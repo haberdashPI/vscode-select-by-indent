@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.1.0
+
+- fixed bug when selecting single-line indent region
+- added large variety of options for how indentation is used to expand the
+  selection (inner only outer only and top only variations).
+
 ## 0.0.3
 
 - added explicit "top-only" version of command; this ensures proper selection
