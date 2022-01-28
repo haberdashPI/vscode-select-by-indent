@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.3.0
+- **feature**: Selecty by Indent now works in vscode.dev
+
 ## 0.2.1
 - **cleanup**: fix downstream vulnerabilities, cleanup build process
 
