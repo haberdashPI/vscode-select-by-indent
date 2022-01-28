@@ -42,12 +42,26 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer-down', () => {
+        let editor = vscode.window.activeTextEditor;
+        if(editor){
+            editor.selections = editor.selections.map(expandByIndent(editor,{outer: true, moveDown: true}));
+        }
+    });
+
     context.subscriptions.push(disposable);
 
     disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer-top-only', () => {
         let editor = vscode.window.activeTextEditor;
         if(editor){
             editor.selections = editor.selections.map(expandByIndent(editor,{outer: true, toponly: true}));
+        }
+    });
+
+    disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer-down-top-only', () => {
+        let editor = vscode.window.activeTextEditor;
+        if(editor){
+            editor.selections = editor.selections.map(expandByIndent(editor,{outer: true, toponly: true, moveDown: true}));
         }
     });
 
@@ -122,6 +136,7 @@ interface IOptions {
     toponly?: boolean,
     inner?: boolean,
     outer?: boolean
+    moveDown?: boolean
 }
 
 function includeOuter(doc: vscode.TextDocument,
@@ -155,8 +170,11 @@ function expandByIndent(editor: vscode.TextEditor, options: IOptions | undefined
     return function(sel: vscode.Selection){
         let doc = editor.document;
 
-        let from = sel.start.line
-        let to = sel.end.line
+        let from = sel.start.line;
+        let to = sel.end.line;
+        if(sel.start.line === sel.end.line && options.moveDown){
+            to = from += 1;
+        }
         if(sel.end.character === 0 && sel.end.line > sel.start.line) to--
 
         let lines = doc.getText(lineRange(doc,from,to));

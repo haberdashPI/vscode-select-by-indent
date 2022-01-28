@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.0
+- **feature**: new commands to select 'outer' indentation when cursor is on
+  one of said outer indentation lines.
+
 ## 0.1.2
 
 - fix downstream vulnerabilities

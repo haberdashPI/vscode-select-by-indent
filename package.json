@@ -6,7 +6,7 @@
 	"repository": "https://github.com/haberdashPI/vscode-select-by-indent",
 	"icon": "icon.png",
 	"description": "Quickly select code according to its level of indentation",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
@@ -33,15 +33,23 @@
 			},
 			{
 				"command": "vscode-select-by-indent.select-inner",
-				"title": "Expand Selection by Indentation Level (inner only)"
+				"title": "Expand Selection by Indentation Level (inner)"
 			},
 			{
 				"command": "vscode-select-by-indent.select-outer",
-				"title": "Expand Selection by Indentation Level (outer only)"
+				"title": "Expand Selection by Indentation Level (outer)"
+			},
+			{
+				"command": "vscode-select-by-indent.select-outer-down",
+				"title": "Expand Selection by Indentation Level (outer below)"
 			},
 			{
 				"command": "vscode-select-by-indent.select-outer-top-only",
-				"title": "Expand Selection by Indentation Level (outer top only)"
+				"title": "Expand Selection by Indentation Level (top only)"
+			},
+			{
+				"command": "vscode-select-by-indent.select-outer-down-top-only",
+				"title": "Expand Selection by Indentation Level (top only below)"
 			}
 		]
 	},
