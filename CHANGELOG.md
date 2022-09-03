@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.3.3
+- **bugfix**: fix excess package files (updated .vscodeignore)
+
 ## 0.3.2
 - **bugfix**: added more activation events
 

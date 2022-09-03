@@ -6,7 +6,7 @@
 	"repository": "https://github.com/haberdashPI/vscode-select-by-indent",
 	"icon": "icon.png",
 	"description": "Quickly select code according to its level of indentation",
-	"version": "0.3.2",
+	"version": "0.3.3",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
