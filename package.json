@@ -6,7 +6,7 @@
 	"repository": "https://github.com/haberdashPI/vscode-select-by-indent",
 	"icon": "icon.png",
 	"description": "Quickly select code according to its level of indentation",
-	"version": "0.3.0",
+	"version": "0.3.2",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
@@ -18,7 +18,9 @@
 		"onCommand:vscode-select-by-indent.select-top-only",
 		"onCommand:vscode-select-by-indent.select-inner",
 		"onCommand:vscode-select-by-indent.select-outer",
-		"onCommand:vscode-select-by-indent.select-outer-top-only"
+		"onCommand:vscode-select-by-indent.select-outer-down",
+		"onCommand:vscode-select-by-indent.select-outer-top-only",
+		"onCommand:vscode-select-by-indent.select-outer-down-top-only"
 	],
 	"browser": "./dist/web/main.js",
 	"contributes": {
@@ -67,7 +69,7 @@
 		"@types/mocha": "^7.0.2",
 		"@types/node": "^13.11.0",
 		"@types/vscode": "^1.44.0",
-		"@typescript-eslint/eslint-plugin": "^5.10.1",
+		"@typescript-eslint/eslint-plugin": "^5.36.1",
 		"@typescript-eslint/parser": "^5.10.1",
 		"eslint": "^8.7.0",
 		"glob": "^7.1.6",

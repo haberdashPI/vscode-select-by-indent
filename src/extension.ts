@@ -23,7 +23,6 @@ export function activate(context: vscode.ExtensionContext) {
             editor.selections = editor.selections.map(expandByIndent(editor,{toponly: true}));
         }
     });
-
     context.subscriptions.push(disposable);
 
     disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-inner', () => {
@@ -32,7 +31,6 @@ export function activate(context: vscode.ExtensionContext) {
             editor.selections = editor.selections.map(expandByIndent(editor,{inner: true}));
         }
     });
-
     context.subscriptions.push(disposable);
 
     disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer', () => {
@@ -41,6 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
             editor.selections = editor.selections.map(expandByIndent(editor,{outer: true}));
         }
     });
+    context.subscriptions.push(disposable);
 
     disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer-down', () => {
         let editor = vscode.window.activeTextEditor;
@@ -48,7 +47,6 @@ export function activate(context: vscode.ExtensionContext) {
             editor.selections = editor.selections.map(expandByIndent(editor,{outer: true, moveDown: true}));
         }
     });
-
     context.subscriptions.push(disposable);
 
     disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer-top-only', () => {
@@ -57,6 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
             editor.selections = editor.selections.map(expandByIndent(editor,{outer: true, toponly: true}));
         }
     });
+    context.subscriptions.push(disposable);
 
     disposable = vscode.commands.registerCommand('vscode-select-by-indent.select-outer-down-top-only', () => {
         let editor = vscode.window.activeTextEditor;
@@ -64,7 +63,6 @@ export function activate(context: vscode.ExtensionContext) {
             editor.selections = editor.selections.map(expandByIndent(editor,{outer: true, toponly: true, moveDown: true}));
         }
     });
-
     context.subscriptions.push(disposable);
 }
 

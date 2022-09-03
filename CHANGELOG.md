@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.3.2
+- **bugfix**: added more activation events
+
+## 0.3.1
+- **bugfix**: `vscode-select-by-indent.select-outer-down` command was missing
+- **bugfix**: updates to upstream deps
+
 ## 0.3.0
 - **feature**: Selecty by Indent now works in vscode.dev
 
